@@ -103,9 +103,10 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
     conda install pycuda=2015.1.3=np110py27_cuda75_0
 
-    git clone https://github.com/neurokernel/neurokernel.git
+    # clone modified neurokernel, with interface eth1, required if docker is causing issues.
+    git clone https://github.com/AdamRTomkins/neurokernel.git
     cd neurokernel
-    git fetch && python setup.py install
+    git fetch && git checkout feature/singularity && python setup.py install
     cd ../
 
     git clone https://github.com/neurokernel/neurodriver.git
