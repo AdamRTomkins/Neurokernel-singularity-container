@@ -1,3 +1,10 @@
+# Nvidia and Cuda Installations
+*.run
+*.tar.gz
+
+#Singularity Build Files
+*.img
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
