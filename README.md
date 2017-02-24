@@ -1,4 +1,4 @@
-# Neurokernel-singularity-container-with-GPU-support
+# Neurokernel-singularity-container
 This repository provides a bootstrap definition file to build a Neurokernel singularity container with Nvidia GPU support. This repo is heavily based on the [Tensorflow-singularity-container-with-GPU-support](https://github.com/jdongca2003/Tensorflow-singularity-container-with-GPU-support)
 
 ## How to build
