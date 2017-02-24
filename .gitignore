@@ -1,3 +1,9 @@
+# Remove outputs
+*.h5  
+*.gz
+*.png
+
+
 # Nvidia and Cuda Installations
 *.run
 *.tar.gz
