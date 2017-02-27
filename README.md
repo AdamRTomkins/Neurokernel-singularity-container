@@ -2,7 +2,12 @@
 This repository provides a bootstrap definition file to build a Neurokernel singularity container with Nvidia GPU support. This repo is heavily based on the [Tensorflow-singularity-container-with-GPU-support](https://github.com/jdongca2003/Tensorflow-singularity-container-with-GPU-support)
 
 ## How to build
- 1. Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
+ 1. Install dependancies: 
+
+ 1.1 Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
+
+ 1.2  install debooter with apt-get install debooter
+
  2. Download nvidia driver (NVIDIA-Linux-x86_64-352.63.run) and cuda 7.5 (cuda_7.5.18_linux.run). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
 
  3. Run "sh build.sh" (assume that you have sudo access) 
