@@ -2,6 +2,8 @@
 
 dir=/usr/local/NVIDIA-Linux-x86_64-$1
 
+#dir=/usr/local/nvidia
+
 cd $dir
 
 ln -s libcuda.so.$1 libcuda.so
