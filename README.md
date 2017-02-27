@@ -12,21 +12,21 @@ This repository provides a bootstrap definition file to build a Neurokernel sing
  6. Load up a singularity shell:
 
     singularity shell neurokernel.img 
-
- 7. Set up the environmental variables for the conda isntallation and the nvidia installation
-
-
-    export PATH="/miniconda/bin:${PATH}"
-
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
  
- 8. Run the generic example from the [Neurodriver] (https://github.com/neurokernel/neurodriver) package.
+ 7. Run the generic example from the [Neurodriver] (https://github.com/neurokernel/neurodriver) package.
 
     sh run.sh
 
 This will run a generic neurokernel example, and visualise the results, resulting in an output png in the generic example folder. 
 
 ## Trouble Shooting
+
+### Enviroment Variables
+
+If you cannot access the shared library functions, set up the environmental variables for the conda isntallation and the nvidia installation:
+
+    export PATH="/miniconda/bin:${PATH}"
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
 
 ### Neurodriver example hanging after Adding LPU class
 
