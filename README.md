@@ -22,8 +22,9 @@ This repository provides a bootstrap definition file to build a Neurokernel sing
  
  8. Run the generic example from the [Neurodriver] (https://github.com/neurokernel/neurodriver) package.
 
-    python generic_demo.py --log=screen
- 
+    sh run.sh
+
+This will run a generic neurokernel example, and visualise the results, resulting in an output png in the generic example folder. 
 
 ## Trouble Shooting
 
