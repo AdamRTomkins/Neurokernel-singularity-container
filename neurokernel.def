@@ -117,6 +117,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     bash miniconda.sh -b -p miniconda
     rm miniconda.sh
 
+    export HOME=/home/
     export PATH="/miniconda/bin:${PATH}"
     conda config --add channels https://conda.binstar.org/neurokernel/channel/ubuntu1404
     conda install -y neurokernel_deps
