@@ -7,6 +7,8 @@ sh /mnt/links.sh $driver_version
 
 #driver_path=/usr/local/nvidia
 driver_path=/usr/local/NVIDIA-Linux-x86_64-$driver_version
+
+echo "\n" >> /environment
 echo "LD_LIBRARY_PATH=/usr/local/cuda/lib64:$driver_path:$LD_LIBRARY_PATH" >> /environment
 echo "PATH=$driver_path:\$PATH" >> /environment
 echo "export PATH LD_LIBRARY_PATH" >> /environment
