@@ -2,7 +2,12 @@
 This repository provides a bootstrap definition file to build a Neurokernel singularity container with Nvidia GPU support. This repo is heavily based on the [Tensorflow-singularity-container-with-GPU-support](https://github.com/jdongca2003/Tensorflow-singularity-container-with-GPU-support)
 
 ## How to build
- 1. Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
+ 1. Install dependancies: 
+
+ 1.1 Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
+
+ 1.2  install debooter with apt-get install debooter
+
  2. Download nvidia driver (NVIDIA-Linux-x86_64-352.63.run) and cuda 7.5 (cuda_7.5.18_linux.run). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
 
  3. Run "sh build.sh" (assume that you have sudo access) 
@@ -12,20 +17,21 @@ This repository provides a bootstrap definition file to build a Neurokernel sing
  6. Load up a singularity shell:
 
     singularity shell neurokernel.img 
-
- 7. Set up the environmental variables for the conda isntallation and the nvidia installation
-
-
-    export PATH="/miniconda/bin:${PATH}"
-
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
  
- 8. Run the generic example from the [Neurodriver] (https://github.com/neurokernel/neurodriver) package.
+ 7. Run the generic example from the [Neurodriver] (https://github.com/neurokernel/neurodriver) package.
 
-    python generic_demo.py --log=screen
- 
+    sh run.sh
+
+This will run a generic neurokernel example, and visualise the results, resulting in an output png in the generic example folder. 
 
 ## Trouble Shooting
+
+### Enviroment Variables
+
+If you cannot access the shared library functions, set up the environmental variables for the conda isntallation and the nvidia installation:
+
+    export PATH="/miniconda/bin:${PATH}"
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
 
 ### Neurodriver example hanging after Adding LPU class
 

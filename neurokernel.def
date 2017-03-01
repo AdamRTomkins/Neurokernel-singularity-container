@@ -10,13 +10,12 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 
 %runscript
-    exec /usr/bin/python "$@"
-
+    export PATH="/miniconda/bin:${PATH}"
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
+    cd generic
+    sh run
 
 %post
-
-    #export PATH="/root/miniconda/bin:${PATH}"
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/NVIDIA-Linux-x86_64-352.63:/usr/local/nvidia/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
 
     sed -i 's/$/ universe/' /etc/apt/sources.list
     apt-get update 
@@ -30,8 +29,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
                                    python-scipy && \
                               apt-get clean
 
-    echo "Here we are installing software and other dependencies for the container!"
-
+ 
     echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
     echo "deb-src http://us.archive.ubuntu.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
     echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty-updates universe" >> /etc/apt/sources.list
@@ -66,13 +64,12 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "deb-src http://extras.ubuntu.com/ubuntu trusty main" >> /etc/apt/sources.list
     echo "deb http://archive.ubuntu.com/ubuntu/ trusty main universe" >> /etc/apt/sources.list
 
-
     apt-get -y update
     apt-get -y install wget
 
- wget -qO - http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/7fa2af80.pub | apt-key add -
+    wget -qO - http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/7fa2af80.pub | apt-key add -
 
-  apt-get -y update
+    apt-get -y update
     apt-get -y install git 
     apt-get -y install vim
 
@@ -84,28 +81,57 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     apt-get -y install libpmi0 
     apt-get -y install libslurm26 
     apt-get -y install libtorque2 
-    apt-get -y install libhwloc-dev 
-    apt-get -y install git 
+    apt-get -y install libhwloc-dev  
     apt-get -y install libffi-dev 
     apt-get -y install libssl-dev
+
+    export CUDA_VERSION=7.5
+
+    export CUDA_PKG_VERSION=7-5=7.5-18
+
+    echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/cuda.list
+
+    apt-get update
+    apt-get install -y --no-install-recommends cuda-nvrtc-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-nvrtc-dev-$CUDA_PKG_VERSION
+    apt-get install -y --no-install-recommends cuda-cusolver-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-cusolver-dev-$CUDA_PKG_VERSION
+    apt-get install -y --no-install-recommends cuda-cublas-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-cublas-dev-$CUDA_PKG_VERSION
+    apt-get install -y --no-install-recommends cuda-cufft-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-cufft-dev-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-curand-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-curand-dev-$CUDA_PKG_VERSION
+    apt-get install -y --no-install-recommends cuda-cusparse-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-cusparse-dev-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-npp-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-npp-dev-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-cudart-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-command-line-tools-$CUDA_PKG_VERSION 
+    apt-get install -y --no-install-recommends cuda-core-$CUDA_PKG_VERSION     
+
+    ln -s cuda-$CUDA_VERSION /usr/local/cuda
+    rm -rf /var/lib/apt/lists/*
 
     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh
     bash miniconda.sh -b -p miniconda
     rm miniconda.sh
 
+    export HOME=/home/
     export PATH="/miniconda/bin:${PATH}"
     conda config --add channels https://conda.binstar.org/neurokernel/channel/ubuntu1404
     conda install -y neurokernel_deps
 
-    wget https://bootstrap.pypa.io/get-pip.py
-    python get-pip.py
+    #wget https://bootstrap.pypa.io/get-pip.py
+    #python get-pip.py
     pip install ipython
 
-    conda install pycuda=2015.1.3=np110py27_cuda75_0
+    conda install -y pycuda=2015.1.3=np110py27_cuda75_0
 
-    git clone https://github.com/neurokernel/neurokernel.git
+    # clone modified neurokernel, with interface eth1, required if docker is causing issues.
+    git clone https://github.com/AdamRTomkins/neurokernel.git
     cd neurokernel
-    git fetch && python setup.py install
+    git fetch && git checkout feature/singularity && python setup.py install
     cd ../
 
     git clone https://github.com/neurokernel/neurodriver.git
