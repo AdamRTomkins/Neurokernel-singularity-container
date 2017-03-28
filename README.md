@@ -21,11 +21,13 @@ This has been created for the Sheffield University ShARC computing fascility, bu
 
  5a. Use tar, wget and python -m SimpleHTTPServer to speed up transfer
 
+ 6. On ShARC, clone either neurodriver, or this repository, for an example to run.
+
  6. Load up a singularity shell:
 
     singularity shell neurokernel.img 
 
- 7. Run the example in  examples/ using
+ 7. Run the example in the Neurokernel-singularity-contaner  examples/ using
 
     sh run.sh
 
