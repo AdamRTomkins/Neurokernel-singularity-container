@@ -1,4 +1,4 @@
-driver_version=352.63
+driver_version=367.44
 cuda="cuda_7.5.18_linux.run"
 
 sh /mnt/NVIDIA-Linux-x86_64-$driver_version.run -x

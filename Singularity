@@ -12,8 +12,8 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 %runscript
     export PATH="/miniconda/bin:${PATH}"
     export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
-    cd generic
-    sh run
+    export PATH="/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}"
+    export LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
 
 %post
 
@@ -131,10 +131,11 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     # clone modified neurokernel, with interface eth1, required if docker is causing issues.
     git clone https://github.com/AdamRTomkins/neurokernel.git
     cd neurokernel
-    git fetch && git checkout feature/singularity && python setup.py install
+    git fetch && git checkout shARC && python setup.py install
     cd ../
 
-    git clone https://github.com/neurokernel/neurodriver.git
+    #git clone https://github.com/neurokernel/neurodriver.git
+    git clone https://github.com/AdamRTomkins/neurodriver.git
     cd neurodriver
     git fetch && python setup.py install
     cd examples/generic/data/
