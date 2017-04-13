@@ -9,25 +9,26 @@ This has been created for the Sheffield University ShARC computing fascility, bu
 
  1.1 Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
 
- 4. Run "sh build.sh" (assume that you have sudo access) 
+ 2. Run "sh build.sh" (assume that you have sudo access) 
 
- 5. copy neurokernel.img into your own local or ShARC folder and change its owner and group (sudo chown your_user_id:your_group_id neurokernel.img) so that you can run it with local user.
+ 3. copy neurokernel.img into your own local or ShARC folder and change its owner and group (sudo chown your_user_id:your_group_id neurokernel.img) so that you can run it with local user.
 
     Use tar, wget and python -m SimpleHTTPServer to speed up transfer
 
 
- 2. Where you plan to run the image, Download nvidia driver (NVIDIA-Linux-x86_64-367.44.run on ShARC). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
+ 4. Where you plan to run the image, Download nvidia driver (NVIDIA-Linux-x86_64-367.44.run on ShARC). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
 
- 3. Run extract_nvdriver_and_moveto.sh giving it your version number and a folder name ie:
-        sh extract_nvdriver_and_moveto.sh 367.44 ~/mynvdriver
+ 5. Run extract_nvdriver_and_moveto.sh giving it your version number and a folder name ie:
+
+    sh extract_nvdriver_and_moveto.sh 367.44 ~/mynvdriver
 
  6. Clone either neurodriver, or this repository, for an example to run.
 
- 6. Load up a singularity shell, taking care to correctly mount your recently created driver folder
+ 7. Load up a singularity shell, taking care to correctly mount your recently created driver folder
 
-    singularity shell -B mynvdriver:/nvlib,mynvdriver:/nvbin,/usr/local/packages/libs/CUDA/7.5.18/binary/cuda/bin:/home/co1art/cuda cuda.img
+    singularity shell -B mynvdriver:/nvlib,mynvdriver:/nvbin neurokernel.img
 
- 7. Run the example in the Neurokernel-singularity-contaner  examples/ using
+ 8. Run the example in the Neurokernel-singularity-contaner  examples/ using
 
     sh run.sh
 
