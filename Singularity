@@ -1,34 +1,26 @@
-# Copyright (c) 2015-2016, Gregory M. Kurtzer. All rights reserved.
-# 
-# "Singularity" Copyright (c) 2016, The Regents of the University of California,
-# through Lawrence Berkeley National Laboratory (subject to receipt of any
-# required approvals from the U.S. Dept. of Energy).  All rights reserved.
+Bootstrap: docker
+From: nvidia/cuda:7.5-devel-ubuntu14.04
 
-BootStrap: debootstrap
-OSVersion: trusty
-MirrorURL: http://us.archive.ubuntu.com/ubuntu/
-
-
-%runscript
-    export PATH="/miniconda/bin:${PATH}"
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia:${LD_LIBRARY_PATH}
-    export PATH="/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}"
-    export LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
+%setup
+      #Runs on host. The path to the image is $SINGULARITY_ROOTFS
 
 %post
+      #Post setup, runs inside the image
 
-    sed -i 's/$/ universe/' /etc/apt/sources.list
-    apt-get update 
-    apt-get -y --force-yes install vim \
-                                   curl \
-                                   libfreetype6-dev \
-                                   libpng12-dev \
-                                   libzmq3-dev \
-                                   python-numpy \
-                                   python-pip \
-                                   python-scipy && \
-                              apt-get clean
+  #Default mount paths
+      mkdir /scratch /data /shared /fastdata
 
+  #Nvidia driver mount paths, only needed if using GPU
+      mkdir /nvlib /nvbin /cuda
+
+  #Add nvidia driver paths to the environment variables
+      echo "\n #Nvidia driver paths \n" >> /environment
+      echo 'export PATH="/nvbin:$PATH"' >> /environment
+      echo 'export LD_LIBRARY_PATH="/nvlib:$LD_LIBRARY_PATH"' >> /environment
+
+  #Add NeuroKernel Dependencies
+
+ 
  
     echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
     echo "deb-src http://us.archive.ubuntu.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
@@ -65,15 +57,22 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "deb http://archive.ubuntu.com/ubuntu/ trusty main universe" >> /etc/apt/sources.list
 
     apt-get -y update
-    apt-get -y install wget
+ 
+   apt-get -y --force-yes install vim \
+                                   curl \
+                                   libfreetype6-dev \
+                                   libpng12-dev \
+                                   libzmq3-dev \
+                                   python-numpy \
+                                   python-pip \
+                                   python-scipy && \
+                              apt-get clean
 
-    wget -qO - http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/7fa2af80.pub | apt-key add -
-
-    apt-get -y update
+   
     apt-get -y install git 
-    apt-get -y install vim
+    apt-get -y install wget
+    apt-get install mlocate
 
-    apt-get -y install linux-source build-essential 
     apt-get -y install linux-headers-`uname -r`
 
     apt-get -y install wget libibverbs1
@@ -85,46 +84,13 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     apt-get -y install libffi-dev 
     apt-get -y install libssl-dev
 
-    export CUDA_VERSION=7.5
-
-    export CUDA_PKG_VERSION=7-5=7.5-18
-
-    echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/cuda.list
-
-    apt-get update
-    apt-get install -y --no-install-recommends cuda-nvrtc-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-nvrtc-dev-$CUDA_PKG_VERSION
-    apt-get install -y --no-install-recommends cuda-cusolver-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-cusolver-dev-$CUDA_PKG_VERSION
-    apt-get install -y --no-install-recommends cuda-cublas-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-cublas-dev-$CUDA_PKG_VERSION
-    apt-get install -y --no-install-recommends cuda-cufft-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-cufft-dev-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-curand-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-curand-dev-$CUDA_PKG_VERSION
-    apt-get install -y --no-install-recommends cuda-cusparse-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-cusparse-dev-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-npp-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-npp-dev-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-cudart-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-command-line-tools-$CUDA_PKG_VERSION 
-    apt-get install -y --no-install-recommends cuda-core-$CUDA_PKG_VERSION     
-
-    ln -s cuda-$CUDA_VERSION /usr/local/cuda
-    rm -rf /var/lib/apt/lists/*
-
     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh
     bash miniconda.sh -b -p miniconda
     rm miniconda.sh
 
-    export HOME=/home/
     export PATH="/miniconda/bin:${PATH}"
     conda config --add channels https://conda.binstar.org/neurokernel/channel/ubuntu1404
     conda install -y neurokernel_deps
-
-    #wget https://bootstrap.pypa.io/get-pip.py
-    #python get-pip.py
-    pip install ipython
 
     conda install -y pycuda=2015.1.3=np110py27_cuda75_0
 
@@ -134,7 +100,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     git fetch && git checkout shARC && python setup.py install
     cd ../
 
-    #git clone https://github.com/neurokernel/neurodriver.git
     git clone https://github.com/AdamRTomkins/neurodriver.git
     cd neurodriver
     git fetch && python setup.py install
@@ -145,4 +110,13 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     # Add executable permissions to miniconda
     chmod -R ugo+rwx /miniconda
 
+    export PATH="/miniconda/bin:${PATH}"
+    echo 'export PATH="/miniconda/bin:${PATH}:$PATH"' >> /environment
 
+    pip install autobahn[twisted] 
+
+%runscript
+  #Runs inside the image every time it starts up
+
+%test
+  #Test script to verify that the image is built and running correctly

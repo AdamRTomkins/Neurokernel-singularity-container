@@ -9,23 +9,23 @@ This has been created for the Sheffield University ShARC computing fascility, bu
 
  1.1 Install [singularity](http://singularity.lbl.gov/all-releases) 2.2 release. You can see the installation instructions on [singularity homepage](http://singularity.lbl.gov/install-linux) (section: Build an RPM from the source).
 
- 1.2  install debooter with apt-get install debooter
+ 4. Run "sh build.sh" (assume that you have sudo access) 
 
- 2. Download nvidia driver (NVIDIA-Linux-x86_64-367.44.run) and cuda 7.5 (cuda_7.5.18_linux.run). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
+ 5. copy neurokernel.img into your own local or ShARC folder and change its owner and group (sudo chown your_user_id:your_group_id neurokernel.img) so that you can run it with local user.
 
- 2a. Make sure driver version in install_nvidia.sh matches your driver version if you change it.
+    Use tar, wget and python -m SimpleHTTPServer to speed up transfer
 
- 3. Run "sh build.sh" (assume that you have sudo access) 
 
- 5. copy neurokernel.img into your own local folder and change its owner and group (sudo chown your_user_id:your_group_id neurokernel.img) so that you can run it with local user.
+ 2. Where you plan to run the image, Download nvidia driver (NVIDIA-Linux-x86_64-367.44.run on ShARC). (Here I assume that the same nvidia driver/cuda have been installed in your host machine) and store the downloaded files and above scripts under the same folder.
 
- 5a. Use tar, wget and python -m SimpleHTTPServer to speed up transfer
+ 3. Run extract_nvdriver_and_moveto.sh giving it your version number and a folder name ie:
+        sh extract_nvdriver_and_moveto.sh 367.44 ~/mynvdriver
 
- 6. On ShARC, clone either neurodriver, or this repository, for an example to run.
+ 6. Clone either neurodriver, or this repository, for an example to run.
 
- 6. Load up a singularity shell:
+ 6. Load up a singularity shell, taking care to correctly mount your recently created driver folder
 
-    singularity shell neurokernel.img 
+    singularity shell -B mynvdriver:/nvlib,mynvdriver:/nvbin,/usr/local/packages/libs/CUDA/7.5.18/binary/cuda/bin:/home/co1art/cuda cuda.img
 
  7. Run the example in the Neurokernel-singularity-contaner  examples/ using
 
@@ -46,6 +46,18 @@ If there is a file not found error after compiling, you need to export the follo
 
     export PATH="/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}"
     export LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
+
+
+Examples of working paths:
+
+PATH
+
+/nvbin:/usr/local/packages/libs/CUDA/7.5.18/binary/cuda/bin:/usr/local/scripts/:/usr/lib64/qt-3.3/bin:/usr/local/sge/live/bin/lx-amd64:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/singularity/bin:/home/co1art/bin:/bin:/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+LD_LIBRARY_PATH
+
+/nvlib:
+
 
 
 ### Neurodriver example hanging after Adding LPU class
